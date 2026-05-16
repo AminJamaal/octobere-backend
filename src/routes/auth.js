@@ -46,6 +46,7 @@ router.post('/register', async (req, res) => {
       [email, full_name || '', phone_number || '', password_hash]
     );
     const profile = result.rows[0];
+    delete profile.password_hash;
     const token = generateToken(profile);
     res.status(201).json({ token, profile });
   } catch (err) {
@@ -71,6 +72,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
     const token = generateToken(profile);
+    delete profile.password_hash;
     res.json({ token, profile });
   } catch (err) {
     res.status(500).json({ error: err.message });
