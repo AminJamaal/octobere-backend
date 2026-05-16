@@ -29,6 +29,9 @@ export const pool = new pg.Pool({
   max: 5,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
+  ssl: config.nodeEnv === 'production' && config.databaseUrl.includes('aivencloud')
+    ? { rejectUnauthorized: false }
+    : undefined,
 });
 
 pool.on('error', (err) => {

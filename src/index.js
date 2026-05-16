@@ -51,28 +51,29 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get('/', (req, res) => {
+  res.json({ app: 'Octobere API', version: '1.0.0', status: 'running' });
+});
+
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
 
-async function startServer() {
-  // Try database connection (non-blocking - API still starts even if DB is down)
-  try {
-    const r = await pool.query('SELECT NOW()');
-    console.log('Database connected:', r.rows[0].now);
-  } catch (err) {
-    console.error('WARNING: Database connection failed:', err.message);
-    console.error('The API will start but database-dependent routes will return errors.');
-    console.error('Set DATABASE_URL in .env and restart.');
+const PORT = config.port;
+app.listen(PORT, () => {
+  console.log(`Octobere API running on port ${PORT}`);
+  console.log(`Environment: ${config.nodeEnv}`);
+  console.log(`CORS origin: ${config.frontendUrl}`);
+  console.log(`Auth0 domain: ${config.auth0.domain || 'NOT CONFIGURED'}`);
+
+  if (config.databaseUrl) {
+    pool.query('SELECT NOW()').then(r => {
+      console.log('Database connected:', r.rows[0].now);
+    }).catch(err => {
+      console.error('WARNING: Database connection failed:', err.message);
+    });
+  } else {
+    console.log('No DATABASE_URL set, skipping database check');
   }
-
-  app.listen(config.port, () => {
-    console.log(`Octobere API running on port ${config.port}`);
-    console.log(`Environment: ${config.nodeEnv}`);
-    console.log(`CORS origin: ${config.frontendUrl}`);
-    console.log(`Auth0 domain: ${config.auth0.domain || 'NOT CONFIGURED'}`);
-  });
-}
-
-startServer();
+});
