@@ -6,6 +6,7 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
   databaseUrl: process.env.DATABASE_URL || '',
+  jwtSecret: process.env.JWT_SECRET || 'octobere-dev-secret-change-in-prod',
   auth0: {
     domain: process.env.AUTH0_DOMAIN || '',
     audience: process.env.AUTH0_AUDIENCE || 'https://api.octobere.com',
