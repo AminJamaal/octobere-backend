@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
     const password_hash = hashPassword(password);
     const result = await pool.query(
       `INSERT INTO profiles (id, email, full_name, phone_number, role, membership_tier, password_hash)
-       VALUES (gen_random_uuid(), $1, $2, $3, 'client', 'Standard', $4) RETURNING *`,
+       VALUES (uuid_generate_v4(), $1, $2, $3, 'client', 'Standard', $4) RETURNING *`,
       [email, full_name || '', phone_number || '', password_hash]
     );
     const profile = result.rows[0];
