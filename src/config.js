@@ -24,14 +24,16 @@ export const config = {
   },
 };
 
+const sslConfig = config.databaseUrl.includes('aivencloud') || config.databaseUrl.includes('sslmode=require')
+  ? { rejectUnauthorized: false }
+  : undefined;
+
 export const pool = new pg.Pool({
   connectionString: config.databaseUrl,
   max: 5,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
-  ssl: config.nodeEnv === 'production' && config.databaseUrl.includes('aivencloud')
-    ? { rejectUnauthorized: false }
-    : undefined,
+  ssl: sslConfig,
 });
 
 pool.on('error', (err) => {
