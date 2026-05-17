@@ -25,7 +25,7 @@ export const config = {
   },
 };
 
-const sslConfig = config.databaseUrl.includes('aivencloud') || config.databaseUrl.includes('sslmode=require')
+const sslConfig = config.databaseUrl.includes('sslmode=require') || config.databaseUrl.includes('aivencloud')
   ? { rejectUnauthorized: false }
   : undefined;
 
